@@ -1,0 +1,7 @@
+id,value,quantity,package,components,Approvisionnement ARENIB
+1,TS4231,1,WLCSP-9,TS4231,x
+2,BPW34,1,PHODET_BPW34,LED,
+3,15k,1,R0402,R1,
+4,1.0碌F,1,C0402,C1,
+5,0.1碌F,1,C0402,C2,
+6,IR_CON,1,MA04-1,IR_CON,

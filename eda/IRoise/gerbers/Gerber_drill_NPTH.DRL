@@ -1,0 +1,11 @@
+;NPTH Drill file created by EasyEDA 
+M48
+;Holesize 1 = 0.394 INCH
+T01C0.394
+INCH,00.0000
+%
+G05
+G90
+T01
+X-584252Y684252
+M30

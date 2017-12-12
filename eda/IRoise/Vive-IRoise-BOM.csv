@@ -1,0 +1,14 @@
+id,value,quantity,package,components,Manufacturer Part,Approvisionnement ARENIB,Commentaires
+1,CY8C5888AXI-LP096,1,CYP-AX100,U1,?,x,
+2,USB-B-1,1,USB-B-1,USB1,USB-B-1,,USB (2.0) Type B à brancher verticalement sur la carte
+3,F185-1104A1BSYA1,8,H4-2.54,"STIFF,NIVIDI,PIRNOIR,ARMEN,VIELLE,MILLIER,PETITMINOU,KEREON",F185-1104A1BSYA1,,
+4,P125-1216A0AS116A1,1,H2X8-2.54,J9,P125-1216A0AS116A1,,
+5,0.1UF-0402-16V-10%,9,402,"C1,C2,C3,C4,C5,C6,C7,C12,C13",?,,Tension de fonctionnement 5V max 
+6,1UF-16V(+-10%)(0402),5,0402-CAP,"C8,C9,C10,C11,C15",?,,Tension de fonctionnement 5V max 
+7,10NF-CER,1,0402-CAP,C14,?,,
+8,MCP1825S-3302EDB,1,SOT-223,U4,?,,
+9,4.7uF,1,C0402,C16,CC0402MRX5R5BB475,,
+10,XBEE-1,1,XBEE-1,U2,?,,2 female pin headers for xbee (/!\ pitch 2.0mm)
+11,DIP-Black-Male-Header-VERT-3P,1,H3-2.54,NEO,?,,
+12,JTAG-ISSP,1,PSOC1-ISSP,U5,?,,
+13,MPU-9250,1,QFN24G-0.4-3X3MM,U3,MPU-9250,x,
