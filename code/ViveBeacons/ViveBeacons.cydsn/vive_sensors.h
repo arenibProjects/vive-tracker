@@ -15,7 +15,7 @@
 /* Defines for DMA_timing_read */
 #define DMA_timing_read_BYTES_PER_BURST 127
 #define DMA_timing_read_REQUEST_PER_BURST 0
-#define DMA_timing_read_SRC_BASE (CYDEV_SRAM_BASE)
+#define DMA_timing_read_SRC_BASE (CYDEV_PERIPH_BASE)
 #define DMA_timing_read_DST_BASE (CYDEV_SRAM_BASE)
 
 typedef struct vive_sensors vive_sensors;

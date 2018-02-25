@@ -25,7 +25,7 @@ int main(void) {
     vive_sensors vive_sensors;
     vive_sensors_init(&vive_sensors);
     
-    timing_reset_Write(254);
+    //timing_reset_Write(254);
     
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
 
@@ -34,18 +34,17 @@ int main(void) {
             
             VIVE_pulses_decoded = 0;
             
-            if(i%8==0) {
-            char buffer[512];
             USB_Serial_PutString("-----------\n");
-            while(USB_Serial_CDCIsReady() == 0u);
-            sprintf(buffer, "sync_pulses[0] : %d\n", *VIVEDecoder_1_VIVEDecoder_F0_PTR);
-            USB_Serial_PutString(buffer);
-            while(USB_Serial_CDCIsReady() == 0u);
-            sprintf(buffer, "timing[0] : %d\n", *VIVEDecoder_1_VIVEDecoder_F1_PTR);
-            USB_Serial_PutString(buffer);
-            while(USB_Serial_CDCIsReady() == 0u);
+            
+            for(int i = 0; i < 8; i++) {
+                char buffer[512];
+                sprintf(buffer, "DMA|sync_pulses[%d] : %d\n", i, vive_sensors.sync_pulses[i]);
+                USB_Serial_PutString(buffer);
+                while(USB_Serial_CDCIsReady() == 0u);
+                sprintf(buffer, "DMA|timing[%d] : %d\n", i, vive_sensors.timing[i]);
+                USB_Serial_PutString(buffer);
+                while(USB_Serial_CDCIsReady() == 0u);
             }
-            i++;
         }
     }
 }
