@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include "project.h"
 #include "vive_sensors.h"
+#include "TS4231_driver.h"
 
 int main(void) {
     int i = 0;
@@ -22,15 +23,41 @@ int main(void) {
     while(!USB_Serial_GetConfiguration());
     USB_Serial_CDC_Init();
     
+    CyDelay(3000);
+    
+    USB_Serial_PutString("STARTING ... \n");
+    while(USB_Serial_CDCIsReady() == 0u);
+    CyDelay(1);
+    
     vive_sensors vive_sensors;
     vive_sensors_init(&vive_sensors);
+    
+    USB_Serial_PutString("INITIALIZATION ... \n");
+    while(USB_Serial_CDCIsReady() == 0u);
+    CyDelay(1);
+    
+    TS4231_driver *stiff = TS4231_driver_create(enveloppe_pins_0, data_pins_0);
+    TS4231_driver_init(stiff);
     
     //timing_reset_Write(254);
     
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
 
+    USB_Serial_PutString("CONFIGURED !\n");
+    while(USB_Serial_CDCIsReady() == 0u);
+    
     for(;;) {
-        if(VIVE_pulses_decoded) {
+        while(!TS4231_driver_go_to_watch(stiff));
+        USB_Serial_PutString("WATCH OK\n");
+        while(USB_Serial_CDCIsReady() == 0u);
+        CyDelay(1000);
+        
+        while(!TS4231_driver_go_to_sleep(stiff));
+        USB_Serial_PutString("SLEEP OK\n");
+        while(USB_Serial_CDCIsReady() == 0u);
+        CyDelay(1000);
+        
+        /*if(VIVE_pulses_decoded) {
             
             VIVE_pulses_decoded = 0;
             
@@ -45,7 +72,7 @@ int main(void) {
                 USB_Serial_PutString(buffer);
                 while(USB_Serial_CDCIsReady() == 0u);
             }
-        }
+        }*/
     }
 }
 
