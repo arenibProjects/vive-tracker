@@ -10,8 +10,12 @@
  * ========================================
 */
 
-#include <project.h>
+#if !defined(TS4231_DRIVER_H)
+#define TS4231_DRIVER_H
+
+#include <cytypes.h>
 #include <stdbool.h>
+#include "project.h"
 
 // Defines
 #define BUS_DRIVE_DELAY 1 // in microseconds
@@ -48,5 +52,7 @@ Status TS4231_driver_configure(TS4231_driver* ts4231_driver, uint16_t configurat
 State TS4231_driver_check_bus(TS4231_driver* ts4231_driver);
 void TS4231_driver_write_configuration(TS4231_driver* ts4231_driver, uint16_t configuration_value);
 uint16_t TS4231_driver_read_configuration(TS4231_driver* ts4231_driver);
+
+#endif
 
 /* [] END OF FILE */
