@@ -11,9 +11,9 @@
 */
 
 #include <stdio.h>
-#include "project.h"
-#include "vive_sensors.h"
-#include "TS4231_driver.h"
+#include "main.h"
+
+
 
 int main(void) {
     int i = 0;
