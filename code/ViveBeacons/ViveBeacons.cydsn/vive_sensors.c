@@ -10,6 +10,7 @@
  * ========================================
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "configuration.h"
 #include "VIVE_sensors.h"
@@ -81,15 +82,31 @@ void VIVE_sensors_init(VIVE_sensors *vive_sensors) {
     isr_timing_redirect_StartEx(isr_timing_read);
 }
 
-void VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors, VIVE_sensors_data* vive_sensors_data) {
+VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
+    uint8_t nb_votes = 0;
+    
+    // Voting
+    uint8_t skip;
+    uint8_t data;
+    uint8_t axis;
+    
+    VIVE_sensors_data* vive_sensors_data = (VIVE_sensors_data *) malloc(1*sizeof(VIVE_sensors_data));
+    
     uint8_t timing_readable_reg_value = timing_readable_Read();
     
     // For each sensor
     for(int i = 0; i < 8; i++) {
         vive_sensors_data->angles[i] = ANGLE_invalid_value;
         
-        bool timing_readable_bit = (timing_readable_reg_value & (1 << i)) >> i;        
+        bool timing_readable_bit = (timing_readable_reg_value & (1 << i)) >> i;
         if(timing_readable_bit) { // If it's readable
+            // sync pulse decoding : voting
+            uint8_t sync_pulse = (vive_sensors->sync_pulses[i] - 375) / 75;
+            axis += (sync_pulse & (1 << 0)) >> 0;
+            data += (sync_pulse & (1 << 1)) >> 1;
+            skip += (sync_pulse & (1 << 2)) >> 2;
+            nb_votes++;
+            
             // convert timing to angles
             uint16_t timing = vive_sensors->timing[i];
             
@@ -101,9 +118,16 @@ void VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors, VIVE_sensors_data* 
                 timing = TIMING_angle_min_tick;
             }
             
-            vive_sensors_data->angles[i] = CY_M_PI*((timing-TIMING_angle_center_tick)/TIMING_cycle_max_tick);
+            vive_sensors_data->angles[i] = CY_M_PI*(((double) (timing)-TIMING_angle_center_tick)/(TIMING_cycle_max_tick*1.0));
         }
     }
+    
+    // sync pulse decoding : end of voting
+    vive_sensors_data->axis = (uint8_t) ((axis*1.0) / ((double) nb_votes));
+    vive_sensors_data->data = (uint8_t) ((data*1.0) / ((double) nb_votes));
+    vive_sensors_data->skip = (uint8_t) ((skip*1.0) / ((double) nb_votes));
+    
+    return vive_sensors_data;
 }
 
 /*

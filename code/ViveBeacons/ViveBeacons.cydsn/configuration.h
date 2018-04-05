@@ -13,6 +13,12 @@
 #if !defined(CONFIGURATION_H)
 #define CONFIGURATION_H
 
-#endif
+#define J_AXIS 0
+#define K_AXIS 1
+
+#define HORIZONTAL_AXIS J_AXIS
+#define VERTICAL_AXIS K_AXIS
+
+#endif 
 
 /* [] END OF FILE */

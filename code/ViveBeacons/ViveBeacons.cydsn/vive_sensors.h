@@ -15,6 +15,7 @@
 
 #include <cytypes.h>
 #include <stdbool.h>
+#include <math.h>
 #include "project.h"
 #include "TS4231_driver.h"
 
@@ -31,8 +32,8 @@
 #define TIMING_angle_min_tick TIMING_angle_center_tick - TIMING_cycle_divided_by_3_tick
 #define TIMING_angle_max_tick TIMING_angle_center_tick + TIMING_cycle_divided_by_3_tick
 
-#define ANGLE_invalid_value -42
-    
+#define ANGLE_invalid_value NAN
+
 #define CLK_frequency 7200000 // in Hertz
 
 // Enums
@@ -72,7 +73,7 @@ volatile bool VIVE_pulses_decoded;
 // Public methods
 VIVE_sensors* VIVE_sensors_create();
 void VIVE_sensors_init(VIVE_sensors *vive_sensors);
-void VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors, VIVE_sensors_data* vive_sensors_data);
+VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors);
 
 // Interrupt Service Routines
 CY_ISR_PROTO(isr_timing_read);

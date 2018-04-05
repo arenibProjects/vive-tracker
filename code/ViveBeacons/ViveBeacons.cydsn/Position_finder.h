@@ -13,11 +13,23 @@
 #if !defined(POSITION_FINDER_H)
 #define POSITION_FINDER_H
 
+#include <cytypes.h>
+#include <stdbool.h>
+#include "project.h"
+#include "VIVE_sensors.h"
+#include "position.h"
+    
 // Attributes
 typedef struct Position_finder Position_finder;
 struct Position_finder {
-    
+    Position3D beacon_position;
+    Position2D current_position;
+    Position2D previous_position;
+    VIVE_sensors_data* vive_sensors_data_v;
+    VIVE_sensors_data* vive_sensors_data_h;
 };
+
+
 
 // Public methods
 Position_finder* Position_finder_create();
