@@ -60,11 +60,9 @@ int main(void) {
             vive_sensors_data = VIVE_sensors_process_pulses(vive_sensors);
             free(vive_sensors_data);
             
-            USB_Serial_PutString("-----------\n");
-            
             for(int i = 0; i < 8; i++) {
                 char buffer[512];
-                sprintf(buffer, "angle[%d] : %d, %f\n", i, vive_sensors_data->axis, vive_sensors_data->angles[i]);
+                sprintf(buffer, "ANGLE %d %d %f\n", i, vive_sensors_data->axis, vive_sensors_data->angles[i]);
                 USB_Serial_PutString(buffer);
                 while(USB_Serial_CDCIsReady() == 0u);
             }
