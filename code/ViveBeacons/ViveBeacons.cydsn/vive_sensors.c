@@ -86,9 +86,9 @@ VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
     uint8_t nb_votes = 0;
     
     // Voting
-    uint8_t skip;
-    uint8_t data;
-    uint8_t axis;
+    uint8_t skip = 0;
+    uint8_t data = 0;
+    uint8_t axis = 0;
     
     VIVE_sensors_data* vive_sensors_data = (VIVE_sensors_data *) malloc(1*sizeof(VIVE_sensors_data));
     
@@ -110,13 +110,9 @@ VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
             // convert timing to angles
             uint16_t timing = vive_sensors->timing[i];
             
-            // constrain
-            if(timing>TIMING_angle_max_tick) {
-                timing = TIMING_angle_max_tick;
-            }
-            else if(timing<TIMING_angle_min_tick) {
-                timing = TIMING_angle_min_tick;
-            }
+            // invalid angle
+            if(timing>TIMING_angle_max_tick || timing<TIMING_angle_min_tick)
+                continue;
             
             vive_sensors_data->angles[i] = CY_M_PI*(((double) (timing)-TIMING_angle_center_tick)/(TIMING_cycle_max_tick*1.0));
         }
