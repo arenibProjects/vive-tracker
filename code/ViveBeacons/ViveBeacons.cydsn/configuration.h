@@ -16,8 +16,9 @@
 #define J_AXIS 0
 #define K_AXIS 1
 
-#define HORIZONTAL_AXIS J_AXIS
-#define VERTICAL_AXIS K_AXIS
+// Sweeping axis
+#define HORIZONTAL_AXIS K_AXIS
+#define VERTICAL_AXIS J_AXIS
 
 #endif 
 
