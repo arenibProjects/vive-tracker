@@ -10,7 +10,6 @@
  * ========================================
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include "configuration.h"
 #include "VIVE_sensors.h"
@@ -54,6 +53,7 @@ void VIVE_sensors_init(VIVE_sensors *vive_sensors) {
     CyDmaTdSetConfiguration(vive_sensors->DMA_timing_read_TD[15], 2, vive_sensors->DMA_timing_read_TD[0], DMA_timing_read__TD_TERMOUT_EN); // ... the last one is different
     
     // DMA TDs address configuration
+    CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[0],  LO16((uint32)VIVEDecoder_1_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 0)));
     CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[1],  LO16((uint32)VIVEDecoder_2_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 1)));
     CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[2],  LO16((uint32)VIVEDecoder_3_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 2)));
     CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[3],  LO16((uint32)VIVEDecoder_4_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 3)));
@@ -119,9 +119,20 @@ VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
     }
     
     // sync pulse decoding : end of voting
-    vive_sensors_data->axis = (uint8_t) ((axis*1.0) / ((double) nb_votes));
-    vive_sensors_data->data = (uint8_t) ((data*1.0) / ((double) nb_votes));
-    vive_sensors_data->skip = (uint8_t) ((skip*1.0) / ((double) nb_votes));
+    if(axis >= nb_votes/2.0)
+        vive_sensors_data->axis = 1;
+    else
+        vive_sensors_data->axis = 0;
+    
+    if(data >= nb_votes/2.0)
+        vive_sensors_data->data = 1;
+    else
+        vive_sensors_data->data = 0;
+    
+    if(skip >= nb_votes/2.0)
+        vive_sensors_data->skip = 1;
+    else
+        vive_sensors_data->skip = 0;
     
     return vive_sensors_data;
 }
