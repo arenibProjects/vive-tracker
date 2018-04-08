@@ -16,6 +16,8 @@
 #include "project.h"
 #include "VIVE_sensors.h"
 #include "TS4231_driver.h"
+#include "Position_finder.h"
+#include "configuration.h"
 
 #endif
 

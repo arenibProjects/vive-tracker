@@ -22,11 +22,24 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "position.h"
 #include "main.h"
 
 int main(void) {
     int i = 0;
+    
+    Position3D beacon_position;
+    beacon_position.x = BEACON_COORD_X;
+    beacon_position.y = BEACON_COORD_Y;
+    beacon_position.z = BEACON_COORD_Z;
+    beacon_position.alpha = BEACON_COORD_ALPHA;
+    beacon_position.beta = BEACON_COORD_BETA;
+    beacon_position.gamma = BEACON_COORD_GAMMA;
+    
     VIVE_sensors_data* vive_sensors_data = NULL;
+    VIVE_sensors* vive_sensors = VIVE_sensors_create();
+    Position_finder *position_finder = Position_finder_create();
+    Position_finder_init(position_finder, &beacon_position, LED_COORD_HEIGHT);
     CyGlobalIntEnable; /* Enable global interrupts. */ 
     
     USB_Serial_Start(0, USB_Serial_5V_OPERATION);
@@ -43,7 +56,6 @@ int main(void) {
     while(USB_Serial_CDCIsReady() == 0u);
     CyDelay(1);
     
-    VIVE_sensors* vive_sensors = VIVE_sensors_create();
     VIVE_sensors_init(vive_sensors);
     
     //timing_reset_Write(254);
@@ -55,17 +67,9 @@ int main(void) {
 
     for(;;) {
         if(VIVE_pulses_decoded) {
-            
             VIVE_pulses_decoded = 0;
             vive_sensors_data = VIVE_sensors_process_pulses(vive_sensors);
-            free(vive_sensors_data);
-            
-            for(int i = 0; i < 8; i++) {
-                char buffer[512];
-                sprintf(buffer, "ANGLE %d %d %f\n", i, vive_sensors_data->axis, vive_sensors_data->angles[i]);
-                USB_Serial_PutString(buffer);
-                while(USB_Serial_CDCIsReady() == 0u);
-            }
+            Position_finder_find_position(position_finder, vive_sensors_data);
         }
     }
 }
