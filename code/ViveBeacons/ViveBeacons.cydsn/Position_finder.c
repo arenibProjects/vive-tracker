@@ -64,19 +64,9 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
         double l = (position_finder->beacon_position->z - position_finder->led_height)*tan(CY_M_PI/2-fabs(v_angle));
         led_positions[i].x = position_finder->beacon_position->x + cos(h_angle)*l;
         led_positions[i].y = position_finder->beacon_position->y + sin(h_angle)*l;
-        
-        char buffer[512];
-        sprintf(buffer, "LEDPOS %d %f %f\n", i, led_positions[i].x, led_positions[i].y);
-        USB_Serial_PutString(buffer);
-        while(USB_Serial_CDCIsReady() == 0u);
     }
     
-    /*for(int i = 0; i < 8; i++) {
-        char buffer[512];
-        sprintf(buffer, "LEDPOS %d %f %f\n", i, led_positions[i].x, led_positions[i].y);
-        USB_Serial_PutString(buffer);
-        while(USB_Serial_CDCIsReady() == 0u);
-    }*/
+    
 }
 
 /* [] END OF FILE */
