@@ -55,7 +55,7 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
     
     // Process LED angles
     for(int i = 0; i < 8; i++) {
-        led_positions[i] = NULL;
+        free(led_positions[i]); // free old data
         
         if(position_finder->vive_sensors_data_h->angles[i] == ANGLE_invalid_value || position_finder->vive_sensors_data_v->angles[i] == ANGLE_invalid_value)
             continue;
