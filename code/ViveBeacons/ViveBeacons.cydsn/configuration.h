@@ -18,6 +18,8 @@
 #define J_AXIS 0
 #define K_AXIS 1
 
+#define SQRT_2 1.41421356237
+
 // Sweeping axis
 #define HORIZONTAL_AXIS K_AXIS
 #define VERTICAL_AXIS J_AXIS
@@ -31,6 +33,23 @@
 #define BEACON_COORD_GAMMA 0
 
 #define LED_COORD_HEIGHT 0
+
+// Helps for offset table
+#define X_AXIS 0
+#define Y_AXIS 1
+#define Z_AXIS 2
+
+// Position of LEDs in tracker's coordinates (aka relative to its center)
+double tracker_led_offset[8][2] = {
+    {40, 0},
+    {40*SQRT_2, 40*SQRT_2},
+    {0, 40},
+    {-40*SQRT_2, 40*SQRT_2},
+    {-40, 0},
+    {-40*SQRT_2, -40*SQRT_2},
+    {0, -40},
+    {40*SQRT_2, -40*SQRT_2},
+};
 
 #endif 
 
