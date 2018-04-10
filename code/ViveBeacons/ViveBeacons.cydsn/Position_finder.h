@@ -35,6 +35,10 @@ Position_finder* Position_finder_create();
 void Position_finder_init(Position_finder *position_finder, Position3D* beacon_position, double led_height);
 void Position_finder_find_position(Position_finder *position_finder, VIVE_sensors_data* vive_sensors_data);
 
+// Utils
+double Position_finder_normalize_angle(double angle);
+
+
 #endif
 
 /* [] END OF FILE */

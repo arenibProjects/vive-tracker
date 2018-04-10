@@ -69,7 +69,38 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
         led_positions[i]->y = position_finder->beacon_position->y + sin(h_angle)*l;
     }
     
+    // Compute heading
+    double sum = 0;
+    int nb_couple = 0;
     
+    for(int i = 0; i < 8; i++) {
+        for(int j = i+1; j < 8; j++) {
+            if(led_positions[i] == NULL || led_positions[j] == NULL)
+                continue;
+            
+            double applied_delta_x = led_positions[j]->x - led_positions[i]->x;
+            double applied_delta_y = led_positions[j]->y - led_positions[i]->y;
+            double applied_angle = atan2(applied_delta_y, applied_delta_x);
+            
+            double theorical_delta_x = tracker_led_offset[j][X_AXIS] - tracker_led_offset[i][X_AXIS];
+            double theorical_delta_y = tracker_led_offset[j][Y_AXIS] - tracker_led_offset[i][Y_AXIS];           
+            double theorical_angle = atan2(theorical_delta_y, theorical_delta_x);
+            
+            sum += Position_finder_normalize_angle(applied_angle - theorical_angle);
+            nb_couple++;
+        }
+    }
+    
+    position_finder->current_position.a = sum / nb_couple;
 }
 
+double Position_finder_normalize_angle(double angle) {
+    while(angle < -CY_M_PI)
+        angle += 2*CY_M_PI;
+    
+    while(angle > CY_M_PI)
+        angle -= 2*CY_M_PI;
+    
+    return angle;
+}
 /* [] END OF FILE */
