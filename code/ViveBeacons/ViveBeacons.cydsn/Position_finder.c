@@ -38,7 +38,7 @@ void Position_finder_init(Position_finder *position_finder, Position3D* beacon_p
 }
 
 void Position_finder_find_position(Position_finder *position_finder, VIVE_sensors_data* vive_sensors_data) {
-    Position2D led_positions[8];
+    Position2D* led_positions[8];
 
     // Update data
     if(vive_sensors_data->axis == VERTICAL_AXIS) {
@@ -55,15 +55,18 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
     
     // Process LED angles
     for(int i = 0; i < 8; i++) {
+        led_positions[i] = NULL;
+        
         if(position_finder->vive_sensors_data_h->angles[i] == ANGLE_invalid_value || position_finder->vive_sensors_data_v->angles[i] == ANGLE_invalid_value)
             continue;
         
         double v_angle = position_finder->beacon_position->alpha+position_finder->vive_sensors_data_v->angles[i];
         double h_angle = position_finder->beacon_position->beta-(position_finder->vive_sensors_data_h->angles[i]);
-        
         double l = (position_finder->beacon_position->z - position_finder->led_height)*tan(CY_M_PI/2-fabs(v_angle));
-        led_positions[i].x = position_finder->beacon_position->x + cos(h_angle)*l;
-        led_positions[i].y = position_finder->beacon_position->y + sin(h_angle)*l;
+        
+        led_positions[i] = (Position2D*) malloc(1*sizeof(Position2D));
+        led_positions[i]->x = position_finder->beacon_position->x + cos(h_angle)*l;
+        led_positions[i]->y = position_finder->beacon_position->y + sin(h_angle)*l;
     }
     
     
