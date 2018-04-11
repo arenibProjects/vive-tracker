@@ -39,18 +39,6 @@
 #define Y_AXIS 1
 #define Z_AXIS 2
 
-// Position of LEDs in tracker's coordinates (aka relative to its center)
-double tracker_led_offset[8][2] = {
-    {40, 0},
-    {40*SQRT_2, 40*SQRT_2},
-    {0, 40},
-    {-40*SQRT_2, 40*SQRT_2},
-    {-40, 0},
-    {-40*SQRT_2, -40*SQRT_2},
-    {0, -40},
-    {40*SQRT_2, -40*SQRT_2},
-};
-
 #endif 
 
 /* [] END OF FILE */

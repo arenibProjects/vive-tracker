@@ -36,10 +36,22 @@ int main(void) {
     beacon_position.beta = BEACON_COORD_BETA;
     beacon_position.gamma = BEACON_COORD_GAMMA;
     
+    // Position of LEDs in tracker's coordinates (aka relative to its center)
+    double tracker_led_offset[8][2] = {
+        {200, 0},
+        {200*SQRT_2, 200*SQRT_2},
+        {0, 200},
+        {-200*SQRT_2, 200*SQRT_2},
+        {-200, 0},
+        {-200*SQRT_2, -200*SQRT_2},
+        {0, -40},
+        {200*SQRT_2, -200*SQRT_2},
+    };
+    
     VIVE_sensors_data* vive_sensors_data = NULL;
     VIVE_sensors* vive_sensors = VIVE_sensors_create();
     Position_finder *position_finder = Position_finder_create();
-    Position_finder_init(position_finder, &beacon_position, LED_COORD_HEIGHT);
+    Position_finder_init(position_finder, &beacon_position, LED_COORD_HEIGHT, tracker_led_offset);
     CyGlobalIntEnable; /* Enable global interrupts. */ 
     
     USB_Serial_Start(0, USB_Serial_5V_OPERATION);
@@ -70,6 +82,11 @@ int main(void) {
             VIVE_pulses_decoded = 0;
             vive_sensors_data = VIVE_sensors_process_pulses(vive_sensors);
             Position_finder_find_position(position_finder, vive_sensors_data);
+
+            char buffer[512];
+            sprintf(buffer, "HEADING %f\n", position_finder->current_position.a);
+            USB_Serial_PutString(buffer);
+            while(USB_Serial_CDCIsReady() == 0u);
         }
     }
 }

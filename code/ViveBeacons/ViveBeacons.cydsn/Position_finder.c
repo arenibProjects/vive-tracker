@@ -28,13 +28,17 @@ Position_finder* Position_finder_create() {
     return position_finder;
 }
 
-void Position_finder_init(Position_finder *position_finder, Position3D* beacon_position, double led_height) {
+void Position_finder_init(Position_finder *position_finder, Position3D* beacon_position, double led_height, double tracker_led_offset[8][2]) {
     position_finder->vive_sensors_data_v = NULL;
     position_finder->vive_sensors_data_h = NULL;
     
     position_finder->beacon_position = beacon_position;
     
     position_finder->led_height = led_height;
+    
+    for(int i = 0; i < 8; i++)
+        for(int j = 0; j < 2; j++)
+            position_finder->tracker_led_offset[i][j] = tracker_led_offset[i][j];
 }
 
 void Position_finder_find_position(Position_finder *position_finder, VIVE_sensors_data* vive_sensors_data) {
@@ -55,8 +59,6 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
     
     // Process LED angles
     for(int i = 0; i < 8; i++) {
-        free(led_positions[i]); // free old data
-        
         if(position_finder->vive_sensors_data_h->angles[i] == ANGLE_invalid_value || position_finder->vive_sensors_data_v->angles[i] == ANGLE_invalid_value)
             continue;
         
@@ -64,9 +66,10 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
         double h_angle = position_finder->beacon_position->beta-(position_finder->vive_sensors_data_h->angles[i]);
         double l = (position_finder->beacon_position->z - position_finder->led_height)*tan(CY_M_PI/2-fabs(v_angle));
         
-        led_positions[i] = (Position2D*) malloc(1*sizeof(Position2D));
-        led_positions[i]->x = position_finder->beacon_position->x + cos(h_angle)*l;
-        led_positions[i]->y = position_finder->beacon_position->y + sin(h_angle)*l;
+        Position2D* current_led_position = (Position2D*) malloc(1*sizeof(Position2D));
+        current_led_position->x = position_finder->beacon_position->x + cos(h_angle)*l;
+        current_led_position->y = position_finder->beacon_position->y + sin(h_angle)*l;
+        led_positions[i] = current_led_position;
     }
     
     // Compute heading
@@ -82,13 +85,19 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
             double applied_delta_y = led_positions[j]->y - led_positions[i]->y;
             double applied_angle = atan2(applied_delta_y, applied_delta_x);
             
-            double theorical_delta_x = tracker_led_offset[j][X_AXIS] - tracker_led_offset[i][X_AXIS];
-            double theorical_delta_y = tracker_led_offset[j][Y_AXIS] - tracker_led_offset[i][Y_AXIS];           
+            double theorical_delta_x = position_finder->tracker_led_offset[j][X_AXIS] - position_finder->tracker_led_offset[i][X_AXIS];
+            double theorical_delta_y = position_finder->tracker_led_offset[j][Y_AXIS] - position_finder->tracker_led_offset[i][Y_AXIS];           
             double theorical_angle = atan2(theorical_delta_y, theorical_delta_x);
             
             sum += Position_finder_normalize_angle(applied_angle - theorical_angle);
             nb_couple++;
         }
+    }
+    
+    // free old data
+    for(int i = 0; i < 8; i++) {
+        Position2D* current_led_position = led_positions[i];
+        free(current_led_position);
     }
     
     position_finder->current_position.a = sum / nb_couple;

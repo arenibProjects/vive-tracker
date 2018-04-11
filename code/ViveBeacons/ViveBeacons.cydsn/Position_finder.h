@@ -23,6 +23,7 @@
 typedef struct Position_finder Position_finder;
 struct Position_finder {
     double led_height;
+    double tracker_led_offset[8][2];
     Position3D* beacon_position;
     Position2D current_position;
     Position2D previous_position;
@@ -32,7 +33,7 @@ struct Position_finder {
 
 // Public methods
 Position_finder* Position_finder_create();
-void Position_finder_init(Position_finder *position_finder, Position3D* beacon_position, double led_height);
+void Position_finder_init(Position_finder *position_finder, Position3D* beacon_position, double led_height, double tracker_led_offset[8][2]);
 void Position_finder_find_position(Position_finder *position_finder, VIVE_sensors_data* vive_sensors_data);
 
 // Utils
