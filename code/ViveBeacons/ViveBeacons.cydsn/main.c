@@ -38,14 +38,14 @@ int main(void) {
     
     // Position of LEDs in tracker's coordinates (aka relative to its center)
     double tracker_led_offset[8][2] = {
-        {200, 0},
-        {200*SQRT_2, 200*SQRT_2},
-        {0, 200},
-        {-200*SQRT_2, 200*SQRT_2},
-        {-200, 0},
-        {-200*SQRT_2, -200*SQRT_2},
+        {40, 0},
+        {40*SQRT_2, 40*SQRT_2},
+        {0, 40},
+        {-40*SQRT_2, 40*SQRT_2},
+        {-40, 0},
+        {-40*SQRT_2, -40*SQRT_2},
         {0, -40},
-        {200*SQRT_2, -200*SQRT_2},
+        {40*SQRT_2, -40*SQRT_2},
     };
     
     VIVE_sensors_data* vive_sensors_data = NULL;
