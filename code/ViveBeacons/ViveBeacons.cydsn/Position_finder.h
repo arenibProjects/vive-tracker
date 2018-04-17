@@ -38,7 +38,7 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
 
 // Utils
 double Position_finder_normalize_angle(double angle);
-
+static int Position_finder_compare(void const *a, void const *b); // For median filter
 
 #endif
 
