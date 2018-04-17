@@ -75,7 +75,7 @@ void VIVE_sensors_init(VIVE_sensors *vive_sensors) {
     CyDmaChEnable(vive_sensors->DMA_timing_read_Chan, 1);
 
     // TS4231 drivers init
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < 8; i+=2)
         TS4231_driver_init(vive_sensors->ts4231_drivers[i]);
 
     // Start interrupt
