@@ -44,6 +44,8 @@ void Position_finder_init(Position_finder *position_finder, Position3D* beacon_p
 void Position_finder_find_position(Position_finder *position_finder, VIVE_sensors_data* vive_sensors_data) {
     Position2D* led_positions[8];
     double *heading_values = NULL;
+    double *x_values = NULL;
+    double *y_values = NULL;
     
     for(int i = 0; i < 8; i++) {
         led_positions[i] = NULL;
@@ -89,6 +91,7 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
             if(isnan(led_positions[i]->x) || isnan(led_positions[i]->y) || isnan(led_positions[j]->x) || isnan(led_positions[j]->y))
                 continue; 
             
+            // Compute heading for each sensors
             double applied_delta_x = led_positions[j]->x - led_positions[i]->x;
             double applied_delta_y = led_positions[j]->y - led_positions[i]->y;
             double applied_angle = atan2(applied_delta_y, applied_delta_x);
@@ -98,15 +101,11 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
             double theorical_angle = atan2(theorical_delta_y, theorical_delta_x);
             
             nb_couple++;
+            
+            // Add to heading_values table
             heading_values = (double*) realloc(heading_values, nb_couple*sizeof(double));
             heading_values[nb_couple-1] = Position_finder_normalize_angle(applied_angle - theorical_angle);
         }
-    }
-    
-    // free old data
-    for(int i = 0; i < 8; i++) {
-        Position2D* current_led_position = led_positions[i];
-        free(current_led_position);
     }
     
     if(nb_couple > 1) {
@@ -119,9 +118,56 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
             position_finder->current_position.a = heading_values[nb_couple/2];
     } else if(nb_couple == 1) {
         position_finder->current_position.a = heading_values[0];
-    }
-    else
+    } else
         position_finder->current_position.a = NAN;
+    
+    int nb_led_pos = 0;
+    
+    // Compute X,Y position
+    for(int i = 0; i < 8; i+=2) {
+        double heading = position_finder->current_position.a;
+        Position2D* current_led_position = led_positions[i];
+        
+        if(led_positions[i] == NULL)
+            continue;
+        
+        // compute x and y led coordinates
+        double x_rotated = cos(-heading)*current_led_position->x - sin(-heading)*current_led_position->y;
+        double y_rotated = sin(-heading)*current_led_position->x + cos(-heading)*current_led_position->y;
+        
+        nb_led_pos++;
+        x_values = (double*) realloc(x_values, nb_led_pos*sizeof(double));
+        x_values[nb_led_pos-1] = x_rotated - position_finder->tracker_led_offset[i][X_AXIS];
+        
+        y_values = (double*) realloc(y_values, nb_led_pos*sizeof(double));
+        y_values[nb_led_pos-1] = y_rotated - position_finder->tracker_led_offset[i][Y_AXIS];
+    }
+    
+    if(nb_led_pos > 1) {
+        // -- Median filter --
+        qsort(x_values, nb_led_pos, sizeof(double), Position_finder_compare);
+        qsort(y_values, nb_led_pos, sizeof(double), Position_finder_compare);
+        
+        if((nb_led_pos % 2) == 0) { // If length of heading_values is even
+            position_finder->current_position.x = (x_values[(int) floor(nb_led_pos/2.0)] + x_values[(int) ceil(nb_led_pos/2.0)]) / 2;
+            position_finder->current_position.y = (y_values[(int) floor(nb_led_pos/2.0)] + y_values[(int) ceil(nb_led_pos/2.0)]) / 2;
+        } else {
+            position_finder->current_position.x = x_values[nb_led_pos/2];
+            position_finder->current_position.y = x_values[nb_led_pos/2];
+        }
+    } else if(nb_led_pos == 1) {
+        position_finder->current_position.x = x_values[0];
+        position_finder->current_position.y = y_values[0];
+    } else {
+        position_finder->current_position.x = NAN;
+        position_finder->current_position.y = NAN;
+    }
+    
+    // Free old data
+    for(int i = 0; i < 8; i++) {
+        Position2D* current_led_position = led_positions[i];
+        free(current_led_position);
+    }
 }
 
 double Position_finder_normalize_angle(double angle) {

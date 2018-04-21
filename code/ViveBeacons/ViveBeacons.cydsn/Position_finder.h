@@ -18,7 +18,7 @@
 #include "project.h"
 #include "VIVE_sensors.h"
 #include "position.h"
-    
+
 // Attributes
 typedef struct Position_finder Position_finder;
 struct Position_finder {
