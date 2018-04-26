@@ -26,7 +26,8 @@ struct USB_commands_manager {
 // Public methods
 USB_commands_manager* USB_commands_manager_create();
 void USB_commands_manager_init(USB_commands_manager *usb_commands_manager);
-void USB_commands_manager_send_command(USB_commands_manager *usb_commands_manager);
+void USB_commands_manager_send_command(USB_commands_manager *usb_commands_manager, char command[USB_COMMAND_MANAGER_MAX_COMMAND_LENGTH + 1]);
+//void USB_commands_manager_
 
 #endif
 

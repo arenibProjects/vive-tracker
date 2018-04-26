@@ -42,7 +42,9 @@ void USB_commands_manager_init(USB_commands_manager *usb_commands_manager) {
     CyDelay(1);
 }
 
-void USB_commands_manager_send_command(USB_commands_manager *usb_commands_manager, char command[SERIALCOMMAND_MAXCOMMANDLENGTH + 1]) {
+
+void USB_commands_manager_send_command(USB_commands_manager *usb_commands_manager, char command[USB_COMMAND_MANAGER_MAX_COMMAND_LENGTH + 1]) {
+
     
 }
 
