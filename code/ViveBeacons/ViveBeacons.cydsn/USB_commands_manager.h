@@ -13,6 +13,10 @@
 #if !defined(USB_COMMANDS_MANAGER_H)
 #define USB_COMMANDS_MANAGER_H
 
+// Defines
+#define USB_COMMAND_MANAGER_MAX_COMMAND_LENGTH 8
+#define USB_COMMAND_MANAGER_MAX_BUFFER_SIZE 8
+
 // Attributes
 typedef struct USB_commands_manager USB_commands_manager;
 struct USB_commands_manager {
