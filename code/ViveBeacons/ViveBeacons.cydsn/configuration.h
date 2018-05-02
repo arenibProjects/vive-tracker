@@ -24,6 +24,7 @@
 #define HORIZONTAL_AXIS K_AXIS
 #define VERTICAL_AXIS J_AXIS
 
+// Beacon coordinates
 #define BEACON_COORD_X 315
 #define BEACON_COORD_Y 30
 #define BEACON_COORD_Z 315
@@ -32,6 +33,7 @@
 #define BEACON_COORD_BETA CY_M_PI/2
 #define BEACON_COORD_GAMMA 0
 
+// LEDs height
 #define LED_COORD_HEIGHT 0
 
 // Helps for offset table

@@ -25,6 +25,9 @@
 Position_finder* Position_finder_create() {
     Position_finder* position_finder = (Position_finder*) malloc(1*sizeof(Position_finder));
     
+    position_finder->current_position = (Position2D*) malloc(1*sizeof(Position2D));
+    position_finder->previous_position = (Position2D*) malloc(1*sizeof(Position2D));
+    
     return position_finder;
 }
 
@@ -43,6 +46,7 @@ void Position_finder_init(Position_finder *position_finder, Position3D* beacon_p
 
 void Position_finder_find_position(Position_finder *position_finder, VIVE_sensors_data* vive_sensors_data) {
     Position2D* led_positions[8];
+    Position2D* position = position_finder->current_position;
     double *heading_values = NULL;
     double *x_values = NULL;
     double *y_values = NULL;
@@ -113,19 +117,19 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
         qsort(heading_values, nb_couple, sizeof(double), Position_finder_compare); // sort
         
         if((nb_couple % 2) == 0) // If length of heading_values is even
-            position_finder->current_position.a = (heading_values[(int) floor(nb_couple/2.0)] + heading_values[(int) ceil(nb_couple/2.0)]) / 2;
+            position->a = (heading_values[(int) floor(nb_couple/2.0)] + heading_values[(int) ceil(nb_couple/2.0)]) / 2;
         else
-            position_finder->current_position.a = heading_values[nb_couple/2];
+            position->a = heading_values[nb_couple/2];
     } else if(nb_couple == 1) {
-        position_finder->current_position.a = heading_values[0];
+        position->a = heading_values[0];
     } else
-        position_finder->current_position.a = NAN;
+        position->a = NAN;
     
     int nb_led_pos = 0;
     
     // Compute X,Y position
     for(int i = 0; i < 8; i+=2) {
-        double heading = position_finder->current_position.a;
+        double heading = position_finder->current_position->a;
         Position2D* current_led_position = led_positions[i];
         
         if(led_positions[i] == NULL)
@@ -149,18 +153,18 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
         qsort(y_values, nb_led_pos, sizeof(double), Position_finder_compare);
         
         if((nb_led_pos % 2) == 0) { // If length of heading_values is even
-            position_finder->current_position.x = (x_values[(int) floor(nb_led_pos/2.0)] + x_values[(int) ceil(nb_led_pos/2.0)]) / 2;
-            position_finder->current_position.y = (y_values[(int) floor(nb_led_pos/2.0)] + y_values[(int) ceil(nb_led_pos/2.0)]) / 2;
+            position->x = (x_values[(int) floor(nb_led_pos/2.0)] + x_values[(int) ceil(nb_led_pos/2.0)]) / 2;
+            position->y = (y_values[(int) floor(nb_led_pos/2.0)] + y_values[(int) ceil(nb_led_pos/2.0)]) / 2;
         } else {
-            position_finder->current_position.x = x_values[nb_led_pos/2];
-            position_finder->current_position.y = x_values[nb_led_pos/2];
+            position->x = x_values[nb_led_pos/2];
+            position->y = x_values[nb_led_pos/2];
         }
     } else if(nb_led_pos == 1) {
-        position_finder->current_position.x = x_values[0];
-        position_finder->current_position.y = y_values[0];
+        position->x = x_values[0];
+        position->y = y_values[0];
     } else {
-        position_finder->current_position.x = NAN;
-        position_finder->current_position.y = NAN;
+        position->x = NAN;
+        position->y = NAN;
     }
     
     // Free old data
