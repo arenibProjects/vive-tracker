@@ -172,6 +172,10 @@ void Position_finder_find_position(Position_finder *position_finder, VIVE_sensor
         Position2D* current_led_position = led_positions[i];
         free(current_led_position);
     }
+    
+    free(heading_values);
+    free(x_values);
+    free(y_values);
 }
 
 double Position_finder_normalize_angle(double angle) {
