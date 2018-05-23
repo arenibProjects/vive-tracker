@@ -1,8 +1,8 @@
-\documentclass[10pt,a4paper]{report}
+\documentclass[10pt,a4paper,french]{report}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[francais]{babel}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{babel}
 
 \usepackage{amsthm}
 \usepackage{amsmath}
@@ -12,7 +12,7 @@
 \usepackage{geometry}
 \geometry{top=2cm, bottom=2cm, left=2cm , right=2cm}
 
-\title{Système de positionnement d'un robot mobile basé sur le HTC Vive}
+\title{Système de positionnement d'un robot mobile basé sur le HTC Vive (technologie Lighthouse)}
 \author{Evan \bsc{Roué}}
 \date{2017 - 2018}
 
@@ -22,17 +22,27 @@
 \input{./abstract.tex}
 
 \tableofcontents
+
 \thispagestyle{empty}
 \setcounter{page}{0}
 
-
-
 \chapter{Introduction}
-\chapter{Le HTC Vive}
+\input{./introduction.tex}
+
+\chapter{La technologie Lighthouse}
+\input{./lighthouse.tex}
+
 \chapter{Conception}
+\input{./design.tex}
+
 \chapter{Tests}
+\input{./tests.tex}
+
 \chapter{Retour après la coupe 2018}
+\input{./aftercdr2018.tex}
+
 \chapter{Conclusion}
+\input{./conclusion.tex}
 
 \end{document}
 

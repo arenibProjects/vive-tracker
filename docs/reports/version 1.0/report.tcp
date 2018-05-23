@@ -6,7 +6,7 @@ Version=4
 MainFile=report.tex
 UseBibTeX=1
 UseMakeIndex=1
-ActiveProfile=LaTeX ⇨ PDF
-ProjectLanguage=en
-ProjectDialect=US
+ActiveProfile=XeLaTeX ⇨ PDF
+ProjectLanguage=fr
+ProjectDialect=toutesvariantes
 
