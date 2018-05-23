@@ -229,3 +229,5 @@ TSWLatexianTemp*
 ### LaTeX Patch ###
 # glossaries
 *.glstex
+*.tps
+*.pdf
