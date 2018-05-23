@@ -39,7 +39,14 @@ extern VIVE_sensors* vive_sensors;
 extern Position_finder* position_finder;
 
 // Callback functions
-void callback_get_position();
+void callback_are_you_ready();
+void callback_send_position();
+void callback_set_beacon_position();
+
+// Global variables
+bool beacon_position_initialized = false;
+bool configured = false;
+Position3D beacon_position;
 
 #endif
 

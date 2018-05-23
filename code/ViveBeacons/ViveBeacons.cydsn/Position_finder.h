@@ -22,13 +22,14 @@
 // Attributes
 typedef struct Position_finder Position_finder;
 struct Position_finder {
-    double led_height;
-    double tracker_led_offset[8][2];
     Position3D* beacon_position;
     Position2D* current_position;
     Position2D* previous_position;
     VIVE_sensors_data* vive_sensors_data_v;
     VIVE_sensors_data* vive_sensors_data_h;
+    double tracker_led_offset[8][2];
+    double led_height;
+    uint16_t computation_time;
 };
 
 // Public methods
