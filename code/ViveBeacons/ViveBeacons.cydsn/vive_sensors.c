@@ -20,6 +20,13 @@
     --------------
 */
 
+/*
+    ---------------------------------------------------------------------------
+    Name : Create
+    Description : Create an VIVE sensors "object".
+    ---------------------------------------------------------------------------
+*/
+
 VIVE_sensors* VIVE_sensors_create() {
     VIVE_sensors* vive_sensors = (VIVE_sensors*) malloc(1*sizeof(VIVE_sensors));
     
@@ -36,23 +43,38 @@ VIVE_sensors* VIVE_sensors_create() {
     return vive_sensors;
 }
 
+/*
+    ---------------------------------------------------------------------------
+    Name : Init
+    Description : Init a VIVE sensors object. It configures the different DMA
+    requests to automatically get the pulse length and timing copied from the
+    VIVE Decoders to the RAM. It initializes every TS4231 chips and enable
+    the timing interrupt.
+    N.B. : DMA stands for "Direct Memory Access". In the PSoC, there's a
+    special periphal dedicated to make transfer from one part of the system to
+    another. Here : VIVE_Decoders ----> RAM. Please refer you to Wikipedia and
+    PSoC 5LP documentation for DMAs.
+    ---------------------------------------------------------------------------
+*/
+
 void VIVE_sensors_init(VIVE_sensors *vive_sensors) {
-    // DMA Configuration for DMA_timing_read
+    // --- DMA Configuration for DMA_timing_read ---
     
-    // DMA Channel initialization
+    // - DMA Channel initialization -
     vive_sensors->DMA_timing_read_Chan = DMA_timing_read_DmaInitialize(DMA_timing_read_BYTES_PER_BURST, DMA_timing_read_REQUEST_PER_BURST,
         HI16(DMA_timing_read_SRC_BASE), HI16(DMA_timing_read_DST_BASE));
     
-    // DMA Transfer Descriptors (TD) allocation
+    // - DMA Transfer Descriptors (TD) allocation -
     for(int i = 0; i < 16; i++)
         vive_sensors->DMA_timing_read_TD[i] = CyDmaTdAllocate();
     
-    // DMA TDs configuration
+    // - DMA TDs configuration -
     for(int i = 0; i < 15; i++) // 16-1 = 15 because ...
         CyDmaTdSetConfiguration(vive_sensors->DMA_timing_read_TD[i],  2, vive_sensors->DMA_timing_read_TD[i+1], CY_DMA_TD_AUTO_EXEC_NEXT);
-    CyDmaTdSetConfiguration(vive_sensors->DMA_timing_read_TD[15], 2, vive_sensors->DMA_timing_read_TD[0], DMA_timing_read__TD_TERMOUT_EN); // ... the last one is different
+    // ... the last one is different
+    CyDmaTdSetConfiguration(vive_sensors->DMA_timing_read_TD[15], 2, vive_sensors->DMA_timing_read_TD[0], DMA_timing_read__TD_TERMOUT_EN);
     
-    // DMA TDs address configuration
+    // - DMA TDs address configuration- 
     CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[0],  LO16((uint32)VIVEDecoder_1_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 0)));
     CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[1],  LO16((uint32)VIVEDecoder_2_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 1)));
     CyDmaTdSetAddress(vive_sensors->DMA_timing_read_TD[2],  LO16((uint32)VIVEDecoder_3_VIVEDecoder_F0_PTR), LO16((uint32)(vive_sensors->sync_pulses + 2)));
@@ -74,13 +96,27 @@ void VIVE_sensors_init(VIVE_sensors *vive_sensors) {
     
     CyDmaChEnable(vive_sensors->DMA_timing_read_Chan, 1);
 
-    // TS4231 drivers init
+    // --- TS4231 drivers init ---
     for(int i = 0; i < 8; i+=2)
         TS4231_driver_init(vive_sensors->ts4231_drivers[i]);
 
-    // Start interrupt
+    // --- Start interrupt ---
     isr_timing_redirect_StartEx(isr_timing_read);
 }
+
+/*
+    ---------------------------------------------------------------------------
+    Name : Process pulses
+    Description : With VIVE_Decoders' pulses lengths and timings, this function
+    calculates the [skip,data,axis] bits and the angle (in radians). There's a
+    voting system between all valid pulses lengths to get the insurance that the
+    [skip,data,axis] bits are accurately recognized.
+
+    /!\ BEWARE : This function create dynamically an VIVE_sensor_data
+    structure. It is the responsability of the calling function to free the
+    structure.
+    ---------------------------------------------------------------------------
+*/
 
 VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
     uint8_t nb_votes = 0;
@@ -107,13 +143,14 @@ VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
             skip += (sync_pulse & (1 << 2)) >> 2;
             nb_votes++;
             
-            // convert timing to angles
+            // get the timing
             uint16_t timing = vive_sensors->timing[i];
             
-            // invalid angle
+            // get rid of invalid angle
             if(timing>TIMING_angle_max_tick || timing<TIMING_angle_min_tick)
                 continue;
             
+            // convert timing to angles
             vive_sensors_data->angles[i] = CY_M_PI*(((double) (timing)-TIMING_angle_center_tick)/(TIMING_cycle_max_tick*1.0));
         }
     }
@@ -141,6 +178,14 @@ VIVE_sensors_data* VIVE_sensors_process_pulses(VIVE_sensors *vive_sensors) {
     --------------------------
     Interrupt Service Routines
     --------------------------
+*/
+
+/*
+    ---------------------------------------------------------------------------
+    Name : Timing read
+    Description : Set a flag to allow the main function to process the pulses
+    in the main thread instead of being in an interrupt context.
+    ---------------------------------------------------------------------------
 */
 
 CY_ISR(isr_timing_read) {

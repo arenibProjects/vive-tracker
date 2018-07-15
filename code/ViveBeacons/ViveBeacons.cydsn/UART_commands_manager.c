@@ -18,6 +18,13 @@
 #include "UART_commands_manager.h"
 
 /*
+    ---------------------------------------------------------------------------
+    This file is a PSoC version of an Arduino library. It was trans-coded from
+    https://github.com/kroimon/Arduino-SerialCommand
+    ---------------------------------------------------------------------------
+*/
+
+/*
     --------------
     Public methods
     --------------
@@ -32,9 +39,9 @@ UART_commands_manager* UART_commands_manager_create() {
     
     strcpy(uart_commands_manager->delimiter, " ");
     
-                // Clear buffer
-            uart_commands_manager->buffer[0] = '\0';
-            uart_commands_manager->buffer_pos = 0;
+    // Clear buffer
+    uart_commands_manager->buffer[0] = '\0';
+    uart_commands_manager->buffer_pos = 0;
             
     return uart_commands_manager;
 }

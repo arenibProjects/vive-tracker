@@ -20,8 +20,12 @@
 #include "configuration.h"
 #include "UART_commands_manager.h"
 
-// Position of LEDs in tracker's coordinates (aka relative to its center)
-double tracker_led_offset[8][2] = {
+/*
+Position of LEDs in tracker's coordinates (aka relative to its center).
+This is a list of couples of coordinates {(X0,Y0), (X1,Y1), ..., (X7,Y7)}
+*/
+
+double tracker_led_offset[8][2] = { // 8 for 8 LEDs
     {40, 0},
     {40*SQRT_2, 40*SQRT_2},
     {0, 40},
@@ -32,7 +36,7 @@ double tracker_led_offset[8][2] = {
     {40*SQRT_2, -40*SQRT_2},
 };
 
-// Handlers
+// Handler "objects" pointers
 extern UART_commands_manager* uart_commands_manager;
 extern VIVE_sensors_data* vive_sensors_data;
 extern VIVE_sensors* vive_sensors;

@@ -10,6 +10,13 @@
  * ========================================
 */
 
+/*
+    ---------------------------------------------------------------------------
+    This file is a PSoC version of an Arduino library. It was trans-coded from
+    https://github.com/TriadSemi/TS4231
+    ---------------------------------------------------------------------------
+*/
+
 #include <stdlib.h>
 #include "TS4231_driver.h"
 

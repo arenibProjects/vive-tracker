@@ -15,6 +15,18 @@
 #include "USB_commands_manager.h"
 
 /*
+    ---------------------------------------------------------------------------
+    This file should be a PSoC version of an Arduino library. It would have
+    been trans-coded from https://github.com/kroimon/Arduino-SerialCommand
+    
+    Unfortunately, because of 2018's project evolution (moving from a main
+    robot with a lattepanda to the summberbot using a teensy), this library is
+    not finished. The idea is to copy the already working UART_command_manager
+    here and replaced UART by USB everywhere in the firmware.
+    ---------------------------------------------------------------------------
+*/
+
+/*
     --------------
     Public methods
     --------------
