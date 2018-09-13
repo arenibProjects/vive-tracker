@@ -19,6 +19,7 @@
 #include "Position_finder.h"
 #include "configuration.h"
 #include "UART_commands_manager.h"
+#include "USB_commands_manager.h"
 
 /*
 Position of LEDs in tracker's coordinates (aka relative to its center).

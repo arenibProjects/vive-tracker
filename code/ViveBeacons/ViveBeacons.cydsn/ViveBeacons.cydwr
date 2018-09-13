@@ -363,6 +363,7 @@
       <Data key="17c6e5cd-9c02-4edd-84d9-82d3e2b204ae" value="axis" />
       <Data key="93f625ad-f4d0-46d2-9953-0a1f8ae9f8a7" value="enveloppe_4" />
       <Data key="98ce261d-3a02-475c-bd84-53eed698a776" value="data_pins" />
+      <Data key="264be2d3-9481-494b-8d9c-c1905a45e9cc" value="JUMPER" />
       <Data key="364bc103-1e45-4b75-80fe-382c25da0339" value="enveloppe_7" />
       <Data key="746e783e-1b9c-4345-821f-9a0a25060b47" value="enveloppe_6" />
       <Data key="2245e73a-ccb4-4bf4-9f51-1f6be840d213" value="JUMPER_1" />
@@ -3545,9 +3546,30 @@
         <Data key="Port Format" value="12,5" />
       </Group>
     </Group>
-    <Group key="2245e73a-ccb4-4bf4-9f51-1f6be840d213">
+    <Group key="264be2d3-9481-494b-8d9c-c1905a45e9cc">
       <Group key="0">
         <Data key="Port Format" value="0,0" />
+      </Group>
+      <Group key="1">
+        <Data key="Port Format" value="0,1" />
+      </Group>
+      <Group key="2">
+        <Data key="Port Format" value="0,2" />
+      </Group>
+      <Group key="3">
+        <Data key="Port Format" value="0,3" />
+      </Group>
+      <Group key="4">
+        <Data key="Port Format" value="0,4" />
+      </Group>
+      <Group key="5">
+        <Data key="Port Format" value="0,5" />
+      </Group>
+      <Group key="6">
+        <Data key="Port Format" value="0,6" />
+      </Group>
+      <Group key="7">
+        <Data key="Port Format" value="0,7" />
       </Group>
     </Group>
     <Group key="22863ebe-a37b-476f-b252-6e49a8c00b12">
@@ -3596,11 +3618,6 @@
         <Data key="Port Format" value="15,6" />
       </Group>
     </Group>
-    <Group key="c0a8a8b6-02e9-49da-aef1-c7165baec6cb">
-      <Group key="0">
-        <Data key="Port Format" value="0,1" />
-      </Group>
-    </Group>
     <Group key="e851a3b9-efb8-48be-bbb8-b303b216c393">
       <Group key="0">
         <Data key="Port Format" value="6,7" />
@@ -3623,6 +3640,12 @@
       </Group>
       <Group key="746e783e-1b9c-4345-821f-9a0a25060b47">
         <Data key="0" value="131597212161543996" />
+      </Group>
+      <Group key="2245e73a-ccb4-4bf4-9f51-1f6be840d213">
+        <Data key="0" value="131811701927011581" />
+      </Group>
+      <Group key="c0a8a8b6-02e9-49da-aef1-c7165baec6cb">
+        <Data key="0" value="131811701927011581" />
       </Group>
       <Group key="c7da82f5-1060-4998-88d1-131d74021cfe">
         <Data key="0" value="131597212263501034" />
